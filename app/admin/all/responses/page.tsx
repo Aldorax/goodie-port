@@ -215,6 +215,20 @@ function ResponseRow({
   const sessionName = sessions.find(
     (item) => item.id === enquiry.session,
   )?.title;
+  const timeline =
+    [
+      enquiry.startDate && `Start: ${enquiry.startDate}`,
+      enquiry.endDate && `End: ${enquiry.endDate}`,
+    ]
+      .filter(Boolean)
+      .join(" · ") || enquiry.timeline;
+  const budget =
+    enquiry.budgetAmount && enquiry.budgetCurrency
+      ? new Intl.NumberFormat("en", {
+          style: "currency",
+          currency: enquiry.budgetCurrency,
+        }).format(Number(enquiry.budgetAmount))
+      : enquiry.budget;
   return (
     <tr>
       <td>
@@ -256,20 +270,20 @@ function ResponseRow({
           <summary>View</summary>
           <div className="response-detail">
             <p>{enquiry.description}</p>
-            {enquiry.timeline && (
+            {timeline && (
               <p>
-                <strong>Timeline:</strong> {enquiry.timeline}
+                <strong>Timeline:</strong> {timeline}
               </p>
             )}
-            {enquiry.budget && (
+            {budget && (
               <p>
-                <strong>Budget:</strong> {enquiry.budget}
+                <strong>Budget:</strong> {budget}
               </p>
             )}
             {enquiry.eventName && (
               <p>
-                <strong>Event:</strong> {enquiry.eventName} ·{" "}
-                {enquiry.eventDate || "Date not set"}
+                <strong>Event:</strong> {enquiry.eventName}
+                {enquiry.eventDate && ` · ${enquiry.eventDate}`}
               </p>
             )}
             {enquiry.location && (
