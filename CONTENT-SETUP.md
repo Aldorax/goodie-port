@@ -8,15 +8,17 @@ The Classroom and Resources links lead to substantive sections on `/learn`; no e
 
 Content is shared in `lib/site-content.ts`. Professional history is distinct from project proof. The four 1:1 themes from the brief are enquiry options; no unconfirmed durations, prices, or dates are advertised.
 
-## Enquiry delivery
+## Enquiry delivery and responses
 
 Copy `.env.example` to `.env.local` and restart the development server after setting values. Never commit secrets.
 
-- `CONTACT_EMAIL`: professional email shown publicly. Enables an email-compose link after reviewing an enquiry when no webhook is configured. The visitor must send from their email app; the site does not claim receipt.
-- `ENQUIRY_WEBHOOK_URL`: an HTTPS endpoint belonging to your chosen form/email service or workflow. The server POSTs `{ source, submittedAt, enquiry }` as JSON. `enquiry` includes the validated fields in `lib/enquiry.ts` and consent. The endpoint must return a successful HTTP status only after accepting the enquiry for delivery/storage.
+- `CONTACT_EMAIL`: professional email shown publicly. Enables an email-compose link after reviewing an enquiry when database-backed online submission is unavailable. The visitor must send from their email app; the site does not claim receipt.
+- `DATABASE_URL`: PostgreSQL connection string. Every valid online enquiry is saved to the `enquiries` table before the site confirms receipt. The table is created automatically the first time an enquiry is submitted or the admin responses page is opened.
+- `ADMIN_PASSWORD`: long, unique, server-only password protecting `/admin/all/responses`. Admin sessions use an HTTP-only, secure-in-production cookie and expire after eight hours.
+- `ENQUIRY_WEBHOOK_URL`: optional HTTPS endpoint belonging to your chosen email service or workflow. The server POSTs `{ source, submittedAt, enquiry }` as JSON after saving. A webhook failure does not discard or hide the saved response.
 - `ENQUIRY_WEBHOOK_TOKEN`: optional bearer token sent only by the server.
 
-Without a destination, the form states that online enquiries are not open and offers review, copy, and download. It does not claim a draft was sent. With a webhook, the confirmation screen appears only after a successful endpoint response. Failed delivery retains the form and draft. Configure rate limiting / spam protection in the receiving service or hosting layer before public launch.
+When `DATABASE_URL` is set, visitors can submit after reviewing their enquiry. If it is missing or saving fails, the form retains the draft and reports that it was not received. The admin responses page supports search, service, status, date filters, and pagination. Configure rate limiting / spam protection in the hosting layer before public launch.
 
 Do not use the writing group invite as a private enquiry destination.
 

@@ -87,7 +87,7 @@ export default async function WorkWithMe({
             initialService={service}
             initialSession={session}
             contactEmail={contactEmail}
-            deliveryEnabled={Boolean(process.env.ENQUIRY_WEBHOOK_URL)}
+            deliveryEnabled={Boolean(process.env.DATABASE_URL)}
           />
         </div>
       </section>
